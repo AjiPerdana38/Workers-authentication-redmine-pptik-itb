@@ -1,5 +1,5 @@
 {
-  "cron": "0 0 * * * *",
+  "name": "project-workers",
   "build": {
     "env": {
       "WORKER_COMMAND": "node ./src/index.js"
