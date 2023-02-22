@@ -1,0 +1,8 @@
+{
+  "cron": "0 0 * * * *",
+  "build": {
+    "env": {
+      "WORKER_COMMAND": "node ./src/index.js"
+    }
+  }
+}
