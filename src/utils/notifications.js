@@ -2,15 +2,15 @@ import axios from 'axios'
 import dotenv from 'dotenv'
 dotenv.config()
 
-async function notification (no, tit, con) {
+async function notification (number, title, content) {
   try {
     const sending = await axios({
       method: 'post',
       url: process.env.WA_HOST,
       data: {
-        number: no,
-        title: tit,
-        content: con
+        number,
+        title,
+        content
       },
       headers: {
         'Content-Type': 'application/json',

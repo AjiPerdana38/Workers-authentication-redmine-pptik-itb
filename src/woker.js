@@ -5,10 +5,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const connected = async () => {
-  const connection = await amqp.connect('amqp://redmine-dev:Er3d|01m!n3@rmq2.pptik.id:5672//redmine-dev')
+  const connection = await amqp.connect(process.env.RABBITMQ_URI)
 
   const channel = await connection.createChannel()
-  const queue = 'redmine-logs'
+  const queue = process.env.RABBITMQ_QUEUE
 
   channel.assertQueue(queue, { durable: true })
 
@@ -16,8 +16,10 @@ const connected = async () => {
     const data = message.content.toString()
     const responseJson = JSON.parse(data)
     const payload = JSON.parse(responseJson.payload)
+
     console.table(responseJson)
     channel.ack(message)
+
     const logLogin = new LogLogin({
       userId: responseJson.userId,
       username: responseJson.username,
