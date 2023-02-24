@@ -1,6 +1,7 @@
 import amqp from 'amqplib'
 import LogLogin from './model/logLogin.js'
 import { notification } from './utils/notifications.js'
+import connect from './database/index.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -17,7 +18,8 @@ const connected = async () => {
     const responseJson = JSON.parse(data)
     const payload = JSON.parse(responseJson.payload)
 
-    console.table(responseJson)
+    console.log(responseJson)
+    console.log(payload)
     channel.ack(message)
 
     const logLogin = new LogLogin({
@@ -42,3 +44,4 @@ const connected = async () => {
   }, { noAck: false })
 }
 connected()
+connect()
