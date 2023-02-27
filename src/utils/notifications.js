@@ -2,7 +2,7 @@ import axios from 'axios'
 import dotenv from 'dotenv'
 dotenv.config()
 
-async function notification (number, title, content) {
+const notification = async (number, title, content) => {
   try {
     const sending = await axios({
       method: 'post',
