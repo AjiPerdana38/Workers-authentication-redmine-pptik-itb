@@ -14,53 +14,43 @@ const connected = async () => {
 
   channel.assertQueue(queue, { durable: true })
 
-  channel.consume(queue, message => {
-    const data = message.content.toString()
+  channel.consume(queue, messages => {
+    const data = messages.content.toString()
     const responseJson = JSON.parse(data)
-    const payload = JSON.parse(responseJson.payload)
+
+    const { userId, username, phoneNumber, status, message, timestamp: date } = responseJson
 
     console.log(responseJson)
-    console.log(payload)
-    channel.ack(message)
+    channel.ack(messages)
 
     try {
+      const schema = {
+        userId,
+        username,
+        phoneNumber,
+        status,
+        message,
+        date
+      }
+
       if (responseJson.status === 'login') {
-        const logLogin = new LogLogin({
-          userId: responseJson.userId,
-          username: responseJson.username,
-          phoneNumber: responseJson.phoneNumber,
-          status: responseJson.status,
-          payload: {
-            status: payload.status,
-            message: payload.message
-          },
-          date: responseJson.timestamp
-        })
+        const logLogin = new LogLogin(schema)
         logLogin.save()
       }
 
       if (responseJson.status === 'logout') {
-        const logLogout = new LogLogout({
-          userId: responseJson.userId,
-          username: responseJson.username,
-          phoneNumber: responseJson.phoneNumber,
-          status: responseJson.status,
-          payload: {
-            status: payload.status,
-            message: payload.message
-          },
-          date: responseJson.timestamp
-        })
+        const logLogout = new LogLogout(schema)
         logLogout.save()
       }
 
       console.log('Data telah masuk kedalam database')
 
-      notification(responseJson.phoneNumber, 'Redmine', payload.message)
+      notification(responseJson.phoneNumber, 'Redmine', responseJson.message)
     } catch (error) {
       console.log(error.message)
     }
   }, { noAck: false })
 }
+
 connected()
 connect()

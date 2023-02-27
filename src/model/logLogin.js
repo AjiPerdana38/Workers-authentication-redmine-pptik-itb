@@ -14,13 +14,8 @@ const LogLogin = new Schema({
   status: {
     type: String
   },
-  payload: {
-    status: {
-      type: Number
-    },
-    message: {
-      type: String
-    }
+  message: {
+    type: String
   },
   date: {
     type: Date,
