@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 const { Schema } = mongoose
 
-const LogLogin = new Schema({
+const LogLogout = new Schema({
   userId: {
     type: String
   },
@@ -28,4 +28,4 @@ const LogLogin = new Schema({
   }
 })
 
-export default mongoose.model('logs-logins', LogLogin)
+export default mongoose.model('logs-logout', LogLogout)

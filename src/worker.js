@@ -1,5 +1,6 @@
 import amqp from 'amqplib'
 import LogLogin from './model/logLogin.js'
+import LogLogout from './model/logLogout.js'
 import { notification } from './utils/notifications.js'
 import connect from './database/index.js'
 import dotenv from 'dotenv'
@@ -22,19 +23,37 @@ const connected = async () => {
     console.log(payload)
     channel.ack(message)
 
-    const logLogin = new LogLogin({
-      userId: responseJson.userId,
-      username: responseJson.username,
-      phoneNumber: responseJson.phoneNumber,
-      payload: {
-        status: payload.status,
-        message: payload.message
-      },
-      date: responseJson.timestamp
-    })
-
     try {
-      logLogin.save()
+      if (responseJson.status === 'login') {
+        const logLogin = new LogLogin({
+          userId: responseJson.userId,
+          username: responseJson.username,
+          phoneNumber: responseJson.phoneNumber,
+          status: responseJson.status,
+          payload: {
+            status: payload.status,
+            message: payload.message
+          },
+          date: responseJson.timestamp
+        })
+        logLogin.save()
+      }
+
+      if (responseJson.status === 'logout') {
+        const logLogout = new LogLogout({
+          userId: responseJson.userId,
+          username: responseJson.username,
+          phoneNumber: responseJson.phoneNumber,
+          status: responseJson.status,
+          payload: {
+            status: payload.status,
+            message: payload.message
+          },
+          date: responseJson.timestamp
+        })
+        logLogout.save()
+      }
+
       console.log('Data telah masuk kedalam database')
 
       notification(responseJson.phoneNumber, 'Redmine', payload.message)
